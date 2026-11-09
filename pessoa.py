@@ -50,7 +50,7 @@ class Pessoa:
         while opcao not in (1, 2, 3, 4, 5):
             opcao = int(input("Opção não disponível, informe novamente: "))
 
-        self.atividade_fisica = self.atividade.get(opcao)
+        self.atividade_fisica = self.atividade[opcao]
         
         print("\nObjetivos:\n" 
             "1 : Emagrecimento.\n" 
@@ -61,7 +61,7 @@ class Pessoa:
         while opcao not in (1, 2, 3):
                 opcao = int(input("Opção não disponível, informe novamente: "))
         
-        self.objetivo = self.objetivos.get(opcao)
+        self.objetivo = self.objetivos[opcao]
 
     def exibir_perfil(self):
         print("\nPerfil Geral:"
@@ -76,7 +76,7 @@ class Pessoa:
               f"\nMeta Calórica: {self.meta_kcal:.2f} kcal/dia",
               f"\nMeta Proteica: {self.meta_prot:.2f} g/dia.")
 
-    def calcular_tmb(self):
+    def calcular_tmb(self): #Gasto por dia estimado de kcal.
         if self.sexo == "Masculino":
             self.tmb = (10 * self.peso) + (6.25 * self.altura) - (5 * self.idade) + 5
         else:
@@ -84,7 +84,7 @@ class Pessoa:
 
         return self.tmb
 
-    def calcular_get(self):
+    def calcular_get(self): #Gasto junto com as atividade realizadas.
         self.get = self.tmb * self.atividade_fisica
 
         return self.get
