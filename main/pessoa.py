@@ -1,12 +1,12 @@
 class Pessoa:
     def __init__(self):
-        self.nome = None
-        self.idade = 0
-        self.sexo = None
-        self.peso = 0
-        self.altura = 0
-        self.atividade_fisica = None
-        self.objetivo = None
+        self.nome : str = None
+        self.idade : int = 0
+        self.sexo : str = None
+        self.peso : float = 0
+        self.altura : float = 0
+        self.atividade_fisica : int = None
+        self.objetivo : int = None
 
         self.objetivos = {
             1: "Emagrecimento",
@@ -37,8 +37,10 @@ class Pessoa:
              self.sexo = "Feminino"
 
         self.idade = int(input("\n" + self.nome + ", Informe a sua idade: "))
-        self.peso = float(input("\n" + self.nome + ", Agora informe seu peso (KG): "))
-        self.altura = float(input("\nInforme a sua altura (CM): "))
+        self.peso = float(input("\n" + self.nome + ", Agora informe seu peso: ").replace(',', '.'))
+        self.altura = float(input("\nInforme a sua altura: ").replace(',', '.')) * 100
+
+        
         print("\nNíveis de atividade:")
         print("1 : Sedentário.\n" 
             "2 : Levemente ativo.\n"
