@@ -1,10 +1,6 @@
 
 import pandas as pd
 
-# ==================================================
-# 1. LEITURA DA PLANILHA
-# ==================================================
-
 dados = pd.read_excel("alimentos.xlsx")
 
 base = dados[
@@ -20,32 +16,32 @@ base = dados[
 
 base = base.rename(columns={
     "ID": "id",
-    "Descrição dos alimentos": "nome_alimento",
+    "Descrição dos alimentos": "alimento",
     "Categoria": "cat",
     "Refeição": "refeicao",
-    "Energia(kcal)": "energia_kcal",
-    "Proteína(g)": "proteina_g"
+    "Energia(kcal)": "kcal",
+    "Proteína(g)": "proteina"
 })
 
 # Limpeza dos dados
 base = base.dropna()
 
 base = base.loc[
-    base["nome_alimento"].astype(str).str.strip()
+    base["alimento"].astype(str).str.strip()
     != "Descrição dos alimentos"
 ]
 
 # Conversão numérica
 base["id"] = pd.to_numeric(base["id"], errors="coerce")
-base["energia_kcal"] = pd.to_numeric(
-    base["energia_kcal"], errors="coerce"
+base["kcal"] = pd.to_numeric(
+    base["kcal"], errors="coerce"
 )
-base["proteina_g"] = pd.to_numeric(
-    base["proteina_g"], errors="coerce"
+base["proteina"] = pd.to_numeric(
+    base["proteina"], errors="coerce"
 )
 
 base = base.dropna(
-    subset=["id", "energia_kcal", "proteina_g"]
+    subset=["id", "kcal", "proteina"]
 )
 
 base["id"] = base["id"].astype(int)
@@ -57,11 +53,11 @@ base = base.reset_index(drop=True)
 # 2. DICIONÁRIOS DE REFERÊNCIA
 # ==================================================
 
-food_reference = dict(zip(base["id"], base["nome_alimento"]))
+food_reference = dict(zip(base["id"], base["alimento"]))
 category_reference = dict(zip(base["id"], base["cat"]))
 meal_reference = dict(zip(base["id"], base["refeicao"]))
-calories_reference = dict(zip(base["id"], base["energia_kcal"]))
-protein_reference = dict(zip(base["id"], base["proteina_g"]))
+calories_reference = dict(zip(base["id"], base["kcal"]))
+protein_reference = dict(zip(base["id"], base["proteina"]))
 
 
 # ==================================================
@@ -135,7 +131,7 @@ def consultar_refeicao(refeicao):
 def consultar_nome(nome):
 
     resultado = base[
-        base["nome_alimento"].str.contains(
+        base["alimento"].str.contains(
             nome,
             case=False,
             na=False
