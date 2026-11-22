@@ -187,10 +187,12 @@ A função `avaliar_dieta()` processa o desvio nutricional e as restrições com
    $$\text{erro\_kcal} = \frac{|\text{meta\_kcal} - \text{kcal\_consumida}|}{\text{meta\_kcal}}$$
 
 2. **Desvio Percentual de Proteínas Diárias**:
-   $$\text{erro\_proteina} = \frac{|\text{meta\_proteina} - \text{proteina\_consumida}|}{\text{meta\_proteina}}$$
+   $$\text{erro\_prot} = \frac{|\text{meta\_prot} - \text{prot\_consumida}|}{\text{meta\_prot}}$$
 
 3. **Penalidade por Excesso de Proteína em uma Refeição**:
-   $$\text{Se } \text{prot\_refeicao} > \frac{\text{meta\_proteina}}{6} \implies \text{penalidade} += \frac{\text{prot\_refeicao} - (\text{meta\_proteina}/6)}{\text{meta\_proteina}/6}$$
+   $$\text{Se } p_r > \frac{\text{meta\_prot}}{6} \implies \text{penalidade} \mathrel{+}= \frac{p_r - (\text{meta\_prot}/6)}{\text{meta\_prot}/6}$$
+
+   onde $p_r$ é a proteína consumida na refeição.
 
 4. **Penalidade por Falta de Diversidade no Prato**:
    * Refeição com múltiplos alimentos da mesma categoria: penalidade severa de $+1.0$.
@@ -198,16 +200,17 @@ A função `avaliar_dieta()` processa o desvio nutricional e as restrições com
 
 5. **Incentivo e Penalidade para Lanches**:
    * Se as calorias do lanche estiverem abaixo do teto de referência ($\text{meta\_kcal} / 6$):
-     $$\text{fator\_economia} = \frac{\text{limite\_kcal\_lanche} - \text{kcal\_lanche}}{\text{limite\_kcal\_lanche}}$$
-     $$\text{recompensa\_lanches} += \text{fator\_economia} \times 0.15$$
+     $$f_e = \frac{\text{limite\_kcal\_lanche} - \text{kcal\_lanche}}{\text{limite\_kcal\_lanche}}$$
+     $$\text{recompensa} \mathrel{+}= f_e \times 0.15$$
    * Se o lanche for excessivamente volumoso, aplica-se penalidade proporcional ao excedente.
 
 **Consolidação da Função Custo e Fitness**:
-$$\text{custo\_total} = 1.20 \cdot \text{erro\_kcal} + 1.00 \cdot \text{erro\_proteina} + 0.50 \cdot \text{penalidade\_proteina} + 0.40 \cdot \text{penalidade\_classe} + 0.25 \cdot \text{penalidade\_lanche}$$
 
-$$\text{multiplicador\_recompensa} = 1.0 + \min(0.35, \text{recompensa\_lanches})$$
+$$\text{custo} = 1.20 \cdot e_{\text{kcal}} + 1.00 \cdot e_{\text{prot}} + 0.50 \cdot p_{\text{prot}} + 0.40 \cdot p_{\text{classe}} + 0.25 \cdot p_{\text{lanche}}$$
 
-$$\text{fitness} = \frac{\text{multiplicador\_recompensa}}{1.0 + \text{custo\_total}}$$
+$$\text{mult\_recompensa} = 1.0 + \min(0.35,\ \text{recompensa})$$
+
+$$\text{fitness} = \frac{\text{mult\_recompensa}}{1.0 + \text{custo}}$$
 
 Quanto mais próxima de 1.0 (ou superior) for a pontuação de aptidão, mais fiel à meta nutricional será o cardápio.
 
