@@ -181,36 +181,39 @@ Um cromossomo completo representa um plano semanal de 7 dias (`dia1` a `dia7`). 
 
 ### Função de Aptidão (Fitness) e Penalidades
 
-A função `avaliar_dieta()` processa o desvio nutricional e as restrições comportamentais da dieta:
+A função `avaliar_dieta()` processa o desvio nutricional e as restrições comportamentais da dieta. Nas fórmulas abaixo, $M_{kcal}$ é a meta calórica diária, $M_{prot}$ é a meta proteica diária, $C_{kcal}$ é o total de calorias consumidas e $C_{prot}$ é o total de proteínas consumidas.
 
 1. **Desvio Percentual de Calorias Diárias**:
-   $$\text{erro\_kcal} = \frac{|\text{meta\_kcal} - \text{kcal\_consumida}|}{\text{meta\_kcal}}$$
+
+$$e_{kcal} = \frac{|M_{kcal} - C_{kcal}|}{M_{kcal}}$$
 
 2. **Desvio Percentual de Proteínas Diárias**:
-   $$\text{erro\_prot} = \frac{|\text{meta\_prot} - \text{prot\_consumida}|}{\text{meta\_prot}}$$
 
-3. **Penalidade por Excesso de Proteína em uma Refeição**:
-   $$\text{Se } p_r > \frac{\text{meta\_prot}}{6} \implies \text{penalidade} \mathrel{+}= \frac{p_r - (\text{meta\_prot}/6)}{\text{meta\_prot}/6}$$
+$$e_{prot} = \frac{|M_{prot} - C_{prot}|}{M_{prot}}$$
 
-   onde $p_r$ é a proteína consumida na refeição.
+3. **Penalidade por Excesso de Proteína em uma Refeição** (onde $p_r$ é a proteína da refeição):
+
+$$\text{Se } p_r > \frac{M_{prot}}{6} \implies P_{prot} \mathrel{+}= \frac{p_r - M_{prot}/6}{M_{prot}/6}$$
 
 4. **Penalidade por Falta de Diversidade no Prato**:
    * Refeição com múltiplos alimentos da mesma categoria: penalidade severa de $+1.0$.
    * Repetição pontual de categoria: penalidade incremental de $+0.3$ por item repetido.
 
-5. **Incentivo e Penalidade para Lanches**:
-   * Se as calorias do lanche estiverem abaixo do teto de referência ($\text{meta\_kcal} / 6$):
-     $$f_e = \frac{\text{limite\_kcal\_lanche} - \text{kcal\_lanche}}{\text{limite\_kcal\_lanche}}$$
-     $$\text{recompensa} \mathrel{+}= f_e \times 0.15$$
-   * Se o lanche for excessivamente volumoso, aplica-se penalidade proporcional ao excedente.
+5. **Incentivo e Penalidade para Lanches** (onde $L_{kcal}$ é a caloria do lanche e $T = M_{kcal}/6$ é o teto de referência):
+
+$$f_e = \frac{T - L_{kcal}}{T}, \quad \text{se } L_{kcal} < T$$
+
+$$R \mathrel{+}= f_e \times 0.15$$
+
+Se o lanche for excessivamente volumoso, aplica-se penalidade proporcional ao excedente.
 
 **Consolidação da Função Custo e Fitness**:
 
-$$\text{custo} = 1.20 \cdot e_{\text{kcal}} + 1.00 \cdot e_{\text{prot}} + 0.50 \cdot p_{\text{prot}} + 0.40 \cdot p_{\text{classe}} + 0.25 \cdot p_{\text{lanche}}$$
+$$\text{custo} = 1.20 \cdot e_{kcal} + 1.00 \cdot e_{prot} + 0.50 \cdot P_{prot} + 0.40 \cdot P_{classe} + 0.25 \cdot P_{lanche}$$
 
-$$\text{mult\_recompensa} = 1.0 + \min(0.35,\ \text{recompensa})$$
+$$M_R = 1.0 + \min(0.35,\ R)$$
 
-$$\text{fitness} = \frac{\text{mult\_recompensa}}{1.0 + \text{custo}}$$
+$$\text{fitness} = \frac{M_R}{1.0 + \text{custo}}$$
 
 Quanto mais próxima de 1.0 (ou superior) for a pontuação de aptidão, mais fiel à meta nutricional será o cardápio.
 
