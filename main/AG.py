@@ -51,14 +51,14 @@ def normalizar_texto(valor: Any) -> str:
 def carregar_base_padrao():
     """Importa a base existente sem exigir que ela seja carregada ao importar AG.py."""
     try:
-        from base_alimentos_ import base
+        from base_alimentos import base
     except FileNotFoundError as erro:
         raise FileNotFoundError(
             "Não encontrei alimentos.xlsx. Deixe a planilha na mesma pasta dos arquivos Python."
         ) from erro
     except ModuleNotFoundError as erro:
         raise ModuleNotFoundError(
-            "Não encontrei base_alimentos_.py. Deixe esse arquivo na mesma pasta de AG.py."
+            "Não encontrei base_alimentos.py. Deixe esse arquivo na mesma pasta de AG.py."
         ) from erro
 
     return base

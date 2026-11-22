@@ -1,7 +1,15 @@
 
+import os
+from pathlib import Path
 import pandas as pd
 
-dados = pd.read_excel("alimentos.xlsx")
+caminho_planilha = Path("alimentos.xlsx")
+if not caminho_planilha.exists():
+    caminho_planilha = Path(__file__).resolve().parent.parent / "alimentos.xlsx"
+if not caminho_planilha.exists():
+    caminho_planilha = Path(__file__).resolve().parent / "alimentos.xlsx"
+
+dados = pd.read_excel(caminho_planilha)
 
 base = dados[
     [
@@ -45,6 +53,11 @@ base = base.dropna(
 )
 
 base["id"] = base["id"].astype(int)
+
+# Aliases de compatibilidade para código e testes legados
+base["nome_alimento"] = base["alimento"]
+base["energia_kcal"] = base["kcal"]
+base["proteina_g"] = base["proteina"]
 
 base = base.reset_index(drop=True)
 
@@ -118,7 +131,7 @@ def consultar_categoria(categoria):
 def consultar_refeicao(refeicao):
 
     resultado = base[
-        base["refeicao"].str.lower() == refeicao.lower()
+        base["refeicao"].str.contains(refeicao, case=False, na=False)
     ]
 
     return resultado.copy()

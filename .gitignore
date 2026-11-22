@@ -3,7 +3,8 @@ __pycache__/
 *.py[cod]
 *$py.class
 dieta.txt
-.vscode
+.vscode/
+.pytest_cache/
 
 # Virtual Environments
 .env/
